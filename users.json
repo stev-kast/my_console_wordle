@@ -1,0 +1,10 @@
+{
+  "users": [
+    {
+      "name": "Johann",
+      "last_name": "Castellanos",
+      "username": "stevkast",
+      "passwd": "$2b$10$oRqW5jx95Gm5fvmKcF5r4OsxliYTWeeWLzb9rVCLltOc.4X6wAY62"
+    }
+  ]
+}

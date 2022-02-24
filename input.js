@@ -36,12 +36,26 @@ const createAccount = async () => {
     },
     {
       name: "passwd",
-      type: "input",
+      type: "password",
       message: "Cree su contraseña",
+      mask: "*",
     },
   ];
   // Muestra el menu
   return inquirer.prompt(register_ops);
+};
+
+const confirmMessage = async (message) => {
+  const confirm = [
+    {
+      type: "confirm",
+      name: "confirmMessage",
+      message: message,
+      default: false,
+      suffix: "  (Press Enter)",
+    },
+  ];
+  return inquirer.prompt(confirm);
 };
 
 const loginMenu = async () => {
@@ -61,8 +75,26 @@ const loginMenu = async () => {
   return inquirer.prompt(login_ops);
 };
 
+const loggedMenu = async () => {
+  const log = [
+    {
+      name: "logged_ops",
+      type: "list",
+      message: "Seleccione su opcion",
+      choices: [
+        { value: 1, name: "Crear un nuevo Juego" },
+        { value: 2, name: "Consultar las estadísticas" },
+        { value: 3, name: "Salir" },
+      ],
+    },
+  ];
+  return inquirer.prompt(log);
+};
+
 module.exports = {
   mainMenu,
   createAccount,
   loginMenu,
+  confirmMessage,
+  loggedMenu,
 };
