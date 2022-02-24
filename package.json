@@ -1,0 +1,22 @@
+{
+  "name": "mywordle",
+  "version": "1.0.0",
+  "description": "My wordle version by stev kast",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/stevkast/mywordle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/stevkast/mywordle#readme",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.0"
+  }
+}
