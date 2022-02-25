@@ -19,7 +19,7 @@ const readUsers = async () => {
 async function addUser(newUser) {
   let datos = await readUsers();
   if (!datos.users.some((e) => e.username == newUser.username)) {
-    //Encriptacion
+    //Encriptacion del password
     const hash = await bcrypt.hashSync(newUser.passwd, saltRounds);
     newUser.passwd = hash;
     // Agrega un usuario a la base
@@ -40,18 +40,23 @@ async function addUser(newUser) {
 async function login(account) {
   let datos = await readUsers();
   if (datos.users.some((e) => e.username == account.username)) {
+    // busca si existe el nombre de usuario
     let ind = await datos.users.findIndex(
+      // busca el index del nombre de usuario en el array de los usuarios
       (e) => e.username == account.username
     );
-    let user = datos.users[ind];
+    let user = datos.users[ind]; // Guarda el usuario con el username que se encontro
     if (bcrypt.compareSync(account.passwd, user.passwd)) {
-      return true, account.username;
+      return true, account.username; // retorna verdadero despues de verificar username and password
     } else {
+      console.log(
+        "Los datos de ingreso son incorrectos, por favor intente ingresar de nuevo"
+      );
       return false;
     }
   } else {
     await confirmMessage(
-      "No existe cuenta con este nombre de Usuario, Intente ingresar de nuevo o cree una cuenta nueva"
+      "No existe cuenta con este nombre de Usuario, intente ingresar de nuevo o cree una cuenta nueva"
     );
   }
 }

@@ -46,13 +46,14 @@ const createAccount = async () => {
 };
 
 const confirmMessage = async (message) => {
+  // This is a message to make sure user can read it before clearing screen, can only be removed after tapping a key
   const confirm = [
     {
       type: "confirm",
       name: "confirmMessage",
       message: message,
       default: false,
-      suffix: "  (Press Enter)",
+      suffix: "  =>(Press Enter to continue)<=",
     },
   ];
   return inquirer.prompt(confirm);
