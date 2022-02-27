@@ -1,6 +1,11 @@
-const { mostrarTitulo } = require("./output");
-const { mainMenu, createAccount, loginMenu, loggedMenu } = require("./input");
-const { readUsers, addUser, login } = require("./users");
+const { mostrarTitulo } = require("./user/output");
+const {
+  mainMenu,
+  createAccount,
+  loginMenu,
+  loggedMenu,
+} = require("./user/input");
+const { readUsers, addUser, login } = require("./user/users");
 
 async function main() {
   console.clear();
