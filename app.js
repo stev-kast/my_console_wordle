@@ -6,6 +6,7 @@ const {
   loggedMenu,
 } = require("./user/input");
 const { readUsers, addUser, login } = require("./user/users");
+const { new_game } = require("./game/game");
 
 async function main() {
   console.clear();
@@ -37,7 +38,8 @@ async function main() {
   while (logged) {
     let log = await loggedMenu(); // Here we have the menu of the game after logged
     if (log.logged_ops == 1) {
-      // Crear nuevo juego
+      console.clear();
+      await new_game();
     }
     if (log.logged_ops == 2) {
       // Ver estadisticas
