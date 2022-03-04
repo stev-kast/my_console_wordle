@@ -81,10 +81,31 @@ const compare_words = async (input, word) => {
   let wordChecker = 0;
   for (let j = 0; j < 5; j++) {
     if (input.charAt(j) == word.charAt(j)) {
+      // --- Extra logic to avoid redundance
+      for (let i = 0; i < j; i++) {
+        if (colors[colors.length - 1 - i][0] == input.charAt(j)) {
+          if (word.split("").filter((e) => e == input.charAt(j)).length == 1) {
+            colors[colors.length - 1 - i][1] = 2;
+          }
+        }
+      }
+      // ----------
       colors.push([input.charAt(j), 0]);
       wordChecker++;
     } else if (word.split("").some((e) => e == input.charAt(j))) {
-      colors.push([input.charAt(j), 1]);
+      // --- Extra logic to avoid redundance
+      let count = 0;
+      for (let i = 0; i < j; i++) {
+        if (colors[colors.length - 1 - i][0] == input.charAt(j)) {
+          count++;
+        }
+      }
+      if (count < word.split("").filter((e) => e == input.charAt(j)).length) {
+        colors.push([input.charAt(j), 1]);
+      } else {
+        colors.push([input.charAt(j), 2]);
+      }
+      // --------------
     } else if (word.split("").some((e) => e != input.charAt(j))) {
       colors.push([input.charAt(j), 2]);
     }
@@ -111,8 +132,8 @@ const printWords = async () => {
 };
 
 const new_game = async () => {
+  colors = [];
   let word = await generate_word();
-  console.log(typeof word, word);
   for (let i = 5; i >= 0; i--) {
     printWords();
     let ob_input = await gameMenu(i + 1);
@@ -134,14 +155,16 @@ const new_game = async () => {
         await confirmMessage(
           "Has descubierto la palabra en " + (6 - i) + " intentos!"
         );
-        i = -1;
+        return 6 - i;
       }
       //await confirmMessage(colors);
     }
 
     console.clear();
   }
-  await confirmMessage(colors);
+  printWords();
+  await confirmMessage("Game Over, Mejor suerte la proxima vez!");
+  return 0;
 };
 
 module.exports = {

@@ -33,7 +33,6 @@ async function addUser(newUser) {
     await confirmMessage(
       "El nombre de usuario ya existe, por favor inicie el registro nuevamente con otro nombre de usuario o ingrese con el nombre de usuario que ya existe"
     );
-    console.log("---");
   }
 }
 
@@ -61,8 +60,55 @@ async function login(account) {
   }
 }
 
+async function saveStatics(username, last) {
+  let datos = await readUsers();
+  if (datos.statics.some((e) => e.username == username)) {
+    let ind = await datos.statics.findIndex(
+      // busca el index del nombre de usuario en el array de los statics
+      (e) => e.username == username
+    );
+    datos.statics[ind].statics[last]++;
+    let cadena = JSON.stringify(datos);
+    fs.writeFileSync(link, cadena);
+  } else {
+    await confirmMessage("Gracias por jugar tu primer juego! :)");
+    // Agrega un usuario a la base de estadisticas
+    const newUser = {
+      username: username,
+      statics: [0, 0, 0, 0, 0, 0, 0],
+    };
+    newUser.statics[last] = 1;
+    datos.statics.push(newUser);
+    let cadena = JSON.stringify(datos);
+    fs.writeFileSync(link, cadena);
+  }
+}
+
+async function showStatics(username) {
+  let datos = await readUsers();
+  let stats = await datos.statics.filter((e) => e.username == username)[0];
+  if (stats != undefined) {
+    let games = 0;
+    for (let i = 0; i < stats.statics.length; i++) {
+      games = games + stats.statics[i];
+    }
+    console.log(`Partidas jugadas: ${games}`);
+    console.log(`Victorias: ${percentage(games, games - stats.statics[0])}%`);
+    await confirmMessage("");
+  } else {
+    console.log("No hay datos aun");
+    await confirmMessage("");
+  }
+}
+
+function percentage(games, victories) {
+  return (victories * 100) / games;
+}
+
 module.exports = {
   readUsers,
   addUser,
   login,
+  saveStatics,
+  showStatics,
 };

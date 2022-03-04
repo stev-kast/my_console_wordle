@@ -68,8 +68,9 @@ const loginMenu = async () => {
     },
     {
       name: "passwd",
-      type: "input",
+      type: "password",
       message: "Digite su contraseña",
+      mask: "*",
     },
   ];
   // Muestra el menu

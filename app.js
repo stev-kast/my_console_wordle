@@ -5,7 +5,13 @@ const {
   loginMenu,
   loggedMenu,
 } = require("./user/input");
-const { readUsers, addUser, login } = require("./user/users");
+const {
+  readUsers,
+  addUser,
+  login,
+  saveStatics,
+  showStatics,
+} = require("./user/users");
 const { new_game } = require("./game/game");
 
 async function main() {
@@ -39,10 +45,13 @@ async function main() {
     let log = await loggedMenu(); // Here we have the menu of the game after logged
     if (log.logged_ops == 1) {
       console.clear();
-      await new_game();
+      let result = await new_game();
+      console.clear();
+      await saveStatics(username, result);
     }
     if (log.logged_ops == 2) {
-      // Ver estadisticas
+      console.clear();
+      await showStatics(username);
     }
     if (log.logged_ops == 3) {
       console.clear();
