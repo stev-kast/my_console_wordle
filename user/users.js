@@ -94,6 +94,12 @@ async function showStatics(username) {
     }
     console.log(`Partidas jugadas: ${games}`);
     console.log(`Victorias: ${percentage(games, games - stats.statics[0])}%`);
+    console.log(`1: ${percentage(games, stats.statics[1])}%`);
+    console.log(`2: ${percentage(games, stats.statics[2])}%`);
+    console.log(`3: ${percentage(games, stats.statics[3])}%`);
+    console.log(`4: ${percentage(games, stats.statics[4])}%`);
+    console.log(`5: ${percentage(games, stats.statics[5])}%`);
+    console.log(`6: ${percentage(games, stats.statics[6])}%`);
     await confirmMessage("");
   } else {
     console.log("No hay datos aun");
