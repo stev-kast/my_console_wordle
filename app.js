@@ -1,4 +1,4 @@
-const { mostrarTitulo } = require("./user/output");
+const { showTitle } = require("./user/output");
 const {
   mainMenu,
   createAccount,
@@ -16,7 +16,7 @@ const { new_game } = require("./game/game");
 
 async function main() {
   console.clear();
-  //   mostrarTitulo();
+  // await showTitle();
 
   let logged = false; // This will define if we already have logged in or not
   let username = ""; // This will save the logged username

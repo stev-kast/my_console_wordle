@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const inquirer = require("inquirer");
 let colors = [];
+let keys = [];
 
 const dic_common = path.join(__dirname, "dic_common_5Upper_ES");
 const dic = path.join(__dirname, "dic_5Upper_ES");
@@ -91,6 +92,8 @@ const compare_words = async (input, word) => {
       }
       // ----------
       colors.push([input.charAt(j), 0]);
+      let ind = keys.findIndex((e) => e[0] == input.charAt(j));
+      keys[ind][1] = 0;
       wordChecker++;
     } else if (word.split("").some((e) => e == input.charAt(j))) {
       // --- Extra logic to avoid redundance
@@ -101,12 +104,18 @@ const compare_words = async (input, word) => {
         }
       }
       if (count < word.split("").filter((e) => e == input.charAt(j)).length) {
+        let ind = keys.findIndex((e) => e[0] == input.charAt(j));
+        keys[ind][1] = 1;
         colors.push([input.charAt(j), 1]);
       } else {
+        let ind = keys.findIndex((e) => e[0] == input.charAt(j));
+        keys[ind][1] = 2;
         colors.push([input.charAt(j), 2]);
       }
       // --------------
     } else if (word.split("").some((e) => e != input.charAt(j))) {
+      let ind = keys.findIndex((e) => e[0] == input.charAt(j));
+      keys[ind][1] = 2;
       colors.push([input.charAt(j), 2]);
     }
   }
@@ -116,26 +125,89 @@ const compare_words = async (input, word) => {
 };
 
 const printWords = async () => {
-  for (let i = 0; i < colors.length; i++) {
+  console.log("");
+  console.log("\t-----------------------------------------");
+  for (let i = 0; i < 30; i++) {
     process.stdout.write(" ");
-    if (colors[i][1] == 0) {
-      process.stdout.write(chalk.bgGreen(colors[i][0]));
-    } else if (colors[i][1] == 1) {
-      process.stdout.write(chalk.bgRed(colors[i][0]));
-    } else if (colors[i][1] == 2) {
-      process.stdout.write(chalk.bgBlack(colors[i][0]));
+    process.stdout.write("\t|   ");
+    if (colors[i] != undefined) {
+      if (colors[i][1] == 0) {
+        process.stdout.write(chalk.green(colors[i][0]));
+      } else if (colors[i][1] == 1) {
+        process.stdout.write(chalk.yellow(colors[i][0]));
+      } else if (colors[i][1] == 2) {
+        process.stdout.write(chalk.gray(colors[i][0]));
+      }
     }
     if (((i + 1) % 5 == 0) & (i > 0)) {
+      process.stdout.write("\t|");
       console.log("");
+      console.log("\t-----------------------------------------");
+    }
+  }
+  printKeys();
+};
+
+const printKeys = async () => {
+  console.log("");
+  process.stdout.write("     ");
+  for (let i = 0; i < keys.length; i++) {
+    if (keys[i][1] == 0) {
+      process.stdout.write(chalk.green(keys[i][0]));
+    } else if (keys[i][1] == 1) {
+      process.stdout.write(chalk.yellow(keys[i][0]));
+    } else if (keys[i][1] == 2) {
+      process.stdout.write(chalk.gray(keys[i][0]));
+    } else if (keys[i][1] == 3) {
+      process.stdout.write(chalk.white(keys[i][0]));
+    }
+    process.stdout.write("    ");
+    if (((i + 1) % 10 == 0) & (i > 0)) {
+      console.log("");
+      process.stdout.write("     ");
+    }
+    if (i == 19) {
+      process.stdout.write("     ");
     }
   }
 };
 
 const new_game = async () => {
-  colors = [];
+  keys = [
+    ["Q", 3],
+    ["W", 3],
+    ["E", 3],
+    ["R", 3],
+    ["T", 3],
+    ["Y", 3],
+    ["U", 3],
+    ["I", 3],
+    ["O", 3],
+    ["P", 3],
+    ["A", 3],
+    ["S", 3],
+    ["D", 3],
+    ["F", 3],
+    ["G", 3],
+    ["H", 3],
+    ["J", 3],
+    ["K", 3],
+    ["L", 3],
+    ["Ñ", 3],
+    ["Z", 3],
+    ["X", 3],
+    ["C", 3],
+    ["V", 3],
+    ["B", 3],
+    ["N", 3],
+    ["M", 3],
+  ];
+  colors = []; //new Array(30);
+  // colors.fill([" ", 3]);
   let word = await generate_word();
   for (let i = 5; i >= 0; i--) {
     printWords();
+    console.log("\n");
     let ob_input = await gameMenu(i + 1);
     let input = ob_input.main_game.toUpperCase();
     let ver = await verify_word(input, word);
@@ -163,7 +235,9 @@ const new_game = async () => {
     console.clear();
   }
   printWords();
-  await confirmMessage("Game Over, Mejor suerte la proxima vez!");
+  await confirmMessage(
+    "\n\nGame Over, Mejor suerte la proxima vez! La palabra era: " + word
+  );
   return 0;
 };
 
