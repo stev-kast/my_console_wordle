@@ -247,9 +247,10 @@ const new_game = async () => {
       compare_words(input, word); // Aqui la palabra se encuenta en nuestro diccionario y tiene 5 letras, ahora se compara con la palabra a encontrar
       if (colors.some((e) => e == "@")) {
         // El arroba indica que ya se encontro la palabra
+        console.clear();
         printWords();
         await confirmMessage(
-          "Has descubierto la palabra en " + (6 - i) + " intentos!"
+          "\n\nHas descubierto la palabra en " + (6 - i) + " intentos!"
         );
         return 6 - i;
       }
