@@ -12,13 +12,26 @@ const readUsers = async () => {
     let archivo = fs.readFileSync(link, "utf8");
     let users = JSON.parse(archivo);
     return users;
-    console.log(users);
   }
 };
 
 async function addUser(newUser) {
   let datos = await readUsers();
+  // Crea el archivo de datos si no existe
+  if (datos === undefined) {
+    datos = {
+      users: [],
+      statics: [],
+    };
+
+    let cadena = JSON.stringify(datos);
+    fs.writeFileSync(link, cadena);
+  }
+
+  // Verifica si el nombre de usuario ya existe
   if (!datos.users.some((e) => e.username == newUser.username)) {
+    // Si no existe el nombre de usuario, lo agrega al array de usuarios
+
     //Encriptacion del password
     const hash = await bcrypt.hashSync(newUser.passwd, saltRounds);
     newUser.passwd = hash;
@@ -28,6 +41,7 @@ async function addUser(newUser) {
     let cadena = JSON.stringify(datos);
     // Escribe la cadena al archivo datos.JSON
     fs.writeFileSync(link, cadena);
+    await confirmMessage("Usuario creado exitosamente");
     return datos;
   } else {
     await confirmMessage(
@@ -38,25 +52,32 @@ async function addUser(newUser) {
 
 async function login(account) {
   let datos = await readUsers();
-  if (datos.users.some((e) => e.username == account.username)) {
-    // busca si existe el nombre de usuario
-    let ind = await datos.users.findIndex(
-      // busca el index del nombre de usuario en el array de los usuarios
-      (e) => e.username == account.username
-    );
-    let user = datos.users[ind]; // Guarda el usuario con el username que se encontro
-    if (bcrypt.compareSync(account.passwd, user.passwd)) {
-      return true, account.username; // retorna verdadero despues de verificar username and password
-    } else {
-      console.log(
-        "Los datos de ingreso son incorrectos, por favor intente ingresar de nuevo"
-      );
-      return false;
-    }
+  if (datos === undefined) {
+    await confirmMessage("No hay usuarios registrados");
   } else {
-    await confirmMessage(
-      "No existe cuenta con este nombre de Usuario, intente ingresar de nuevo o cree una cuenta nueva"
-    );
+    if (
+      datos.users.some((e) => e.username == account.username) &&
+      datos.users.length > 0
+    ) {
+      // busca si existe el nombre de usuario
+      let ind = await datos.users.findIndex(
+        // busca el index del nombre de usuario en el array de los usuarios
+        (e) => e.username == account.username
+      );
+      let user = datos.users[ind]; // Guarda el usuario con el username que se encontro
+      if (bcrypt.compareSync(account.passwd, user.passwd)) {
+        return true, account.username; // retorna verdadero despues de verificar username and password
+      } else {
+        console.log(
+          "Los datos de ingreso son incorrectos, por favor intente ingresar de nuevo"
+        );
+        return false;
+      }
+    } else {
+      await confirmMessage(
+        "No existe cuenta con este nombre de Usuario, intente ingresar de nuevo o cree una cuenta nueva"
+      );
+    }
   }
 }
 
