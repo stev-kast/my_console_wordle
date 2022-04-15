@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # User data 
-*users.json
+users.json**
