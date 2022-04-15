@@ -92,19 +92,36 @@ async function showStatics(username) {
     for (let i = 0; i < stats.statics.length; i++) {
       games = games + stats.statics[i];
     }
+    let squares = "";
     console.log(`Partidas jugadas: ${games}`);
     console.log(`Victorias: ${percentage(games, games - stats.statics[0])}%`);
-    console.log(`1: ${percentage(games, stats.statics[1])}%`);
-    console.log(`2: ${percentage(games, stats.statics[2])}%`);
-    console.log(`3: ${percentage(games, stats.statics[3])}%`);
-    console.log(`4: ${percentage(games, stats.statics[4])}%`);
-    console.log(`5: ${percentage(games, stats.statics[5])}%`);
-    console.log(`6: ${percentage(games, stats.statics[6])}%`);
+    squares = generateSquares(percentage(games, stats.statics[1]));
+    console.log(`1: ${squares} ${percentage(games, stats.statics[1])}%`);
+    squares = generateSquares(percentage(games, stats.statics[2]));
+    console.log(`2: ${squares} ${percentage(games, stats.statics[2])}%`);
+    squares = generateSquares(percentage(games, stats.statics[3]));
+    console.log(`3: ${squares} ${percentage(games, stats.statics[3])}%`);
+    squares = generateSquares(percentage(games, stats.statics[4]));
+    console.log(`4: ${squares} ${percentage(games, stats.statics[4])}%`);
+    squares = generateSquares(percentage(games, stats.statics[5]));
+    console.log(`5: ${squares} ${percentage(games, stats.statics[5])}%`);
+    squares = generateSquares(percentage(games, stats.statics[6]));
+    console.log(`6: ${squares} ${percentage(games, stats.statics[6])}%`);
+    squares = generateSquares(percentage(games, stats.statics[0]));
+    console.log(`X: ${squares} ${percentage(games, stats.statics[0])}%`);
     await confirmMessage("");
   } else {
     console.log("No hay datos aun");
     await confirmMessage("");
   }
+}
+
+function generateSquares(stat) {
+  let str = "";
+  for (let i = 0; i < stat; i++) {
+    str = str + "□";
+  }
+  return str;
 }
 
 function percentage(games, victories) {

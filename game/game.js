@@ -79,13 +79,21 @@ const generate_word = async () => {
 };
 
 const compare_words = async (input, word) => {
+  // Aca se guardan los indicadores despues de comparar la palabra ingresada con la palabra a encontrar (0,1,2,3)
+  // 0 indica que la letra esta en la posicion correcta
+  // 1 indica que la letra esta en la palabra pero no en la posicion correcta
+  // 2 indica que la letra no esta en la palabra
+  // 3 es un estado para el codigo que indica que no hay interaccion aun con la letra.
+
   let wordChecker = 0;
   for (let j = 0; j < 5; j++) {
     if (input.charAt(j) == word.charAt(j)) {
-      // --- Extra logic to avoid redundance
+      // --- Extra logic to avoid redundance: Si anteriormente ya se marco la letra con indicador 1 se remueve este dato para ahora indicar que la letra esta en la posicion correcta
+
       for (let i = 0; i < j; i++) {
         if (colors[colors.length - 1 - i][0] == input.charAt(j)) {
           if (word.split("").filter((e) => e == input.charAt(j)).length == 1) {
+            // Se verifica que la letra este solo una vez en la palabra a encontrar
             colors[colors.length - 1 - i][1] = 2;
           }
         }
@@ -93,10 +101,11 @@ const compare_words = async (input, word) => {
       // ----------
       colors.push([input.charAt(j), 0]);
       let ind = keys.findIndex((e) => e[0] == input.charAt(j));
+      // Si la letra en la posicion j de input es igual a la letra en la posicion j de word se guarda como un 0
       keys[ind][1] = 0;
       wordChecker++;
     } else if (word.split("").some((e) => e == input.charAt(j))) {
-      // --- Extra logic to avoid redundance
+      // --- Extra logic to avoid redundance: Se verifica si la palabra contiene dos o mas veces la palabra a encontrar para guardar estos datos correctamente.
       let count = 0;
       for (let i = 0; i < j; i++) {
         if (colors[colors.length - 1 - i][0] == input.charAt(j)) {
@@ -105,7 +114,9 @@ const compare_words = async (input, word) => {
       }
       if (count < word.split("").filter((e) => e == input.charAt(j)).length) {
         let ind = keys.findIndex((e) => e[0] == input.charAt(j));
-        keys[ind][1] = 1;
+        if (keys[ind][1] != 0) {
+          keys[ind][1] = 1;
+        }
         colors.push([input.charAt(j), 1]);
       } else {
         let ind = keys.findIndex((e) => e[0] == input.charAt(j));
@@ -120,11 +131,17 @@ const compare_words = async (input, word) => {
     }
   }
   if (wordChecker == 5) {
+    // Si hay 5 letras en la posicion correctase guarda un arroba para indicar que se ha encontrado la palabra
     colors.push("@");
   }
 };
 
 const printWords = async () => {
+  // This prints box of words in the game
+  // 0 indica que la letra esta en la posicion correcta
+  // 1 indica que la letra esta en la palabra pero no en la posicion correcta
+  // 2 indica que la letra no esta en la palabra
+  // 3 es un estado para el codigo que indica que no hay interaccion aun con la letra.
   console.log("");
   console.log("\t-----------------------------------------");
   for (let i = 0; i < 30; i++) {
@@ -149,6 +166,11 @@ const printWords = async () => {
 };
 
 const printKeys = async () => {
+  // This prints the keyboard
+  // 0 indica que la letra esta en la posicion correcta
+  // 1 indica que la letra esta en la palabra pero no en la posicion correcta
+  // 2 indica que la letra no esta en la palabra
+  // 3 es un estado para el codigo que indica que no hay interaccion aun con la letra.
   console.log("");
   process.stdout.write("     ");
   for (let i = 0; i < keys.length; i++) {
@@ -207,10 +229,11 @@ const new_game = async () => {
   let word = await generate_word();
   for (let i = 5; i >= 0; i--) {
     printWords();
+    console.log(word);
     console.log("\n");
-    let ob_input = await gameMenu(i + 1);
-    let input = ob_input.main_game.toUpperCase();
-    let ver = await verify_word(input, word);
+    let ob_input = await gameMenu(i + 1); // Trae el menu principal del juego
+    let input = ob_input.main_game.toUpperCase(); // Todo el texto del juego se maneja en mayuscula
+    let ver = await verify_word(input, word); // verifica si la palabra cumple con las condiciones minimas (ser de 5 letras y estar en el diccionario)
 
     if (ver == 0) {
       i++;
@@ -221,8 +244,9 @@ const new_game = async () => {
         "La palabra no se encuenta en nuestro diccionario, intente de nuevo"
       );
     } else {
-      compare_words(input, word);
+      compare_words(input, word); // Aqui la palabra se encuenta en nuestro diccionario y tiene 5 letras, ahora se compara con la palabra a encontrar
       if (colors.some((e) => e == "@")) {
+        // El arroba indica que ya se encontro la palabra
         printWords();
         await confirmMessage(
           "Has descubierto la palabra en " + (6 - i) + " intentos!"
